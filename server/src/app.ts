@@ -5,6 +5,11 @@ import express from 'express';
 import errorHandler from './middleware/error-handler.ts';
 import healthRouter from './routes/health-routes.ts';
 
+import { toNodeHandler } from 'better-auth/node';
+import { auth } from './lib/auth.ts';
+
+import sessionRouter from './routes/session.routes.ts';
+
 const app = express();
 
 app.use(cors({
@@ -12,7 +17,13 @@ app.use(cors({
     credentials: true,
 }));
 
+app.all('/api/auth/*splat', toNodeHandler(auth))
+
+app.use(express.json({ limit: '1mb' }))
+
 app.use('/api', healthRouter);
+
+app.use('/api', sessionRouter)
 
 // response for unknown routes
 app.use( (req, res) =>{
