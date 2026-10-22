@@ -5,6 +5,11 @@ import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { authClient } from '../../lib/auth-client'
 
+import { useQuery } from '@tanstack/react-query'
+import { apiRequest } from '../../lib/api-client'
+import type { CurrentWorkspace } from '../../features/workspace/workspace-types'
+import { workspaceQueryKey } from '../../features/workspace/workspace-types'
+
 const navigation = [
     {label: 'Dashboard', to: '/', icon: LayoutDashboard, end: true},
     {label: 'Companies', to: '/companies', icon: Building2},
@@ -30,6 +35,12 @@ export function Applayout() {
     .join('')
     .slice(0, 2)
     .toUpperCase()
+
+  const { data: currentWorkspace } = useQuery({
+    queryKey: workspaceQueryKey,
+    queryFn: () =>
+      apiRequest<CurrentWorkspace>('/api/organizations/current'),
+  })
 
   async function handleSignOut() {
     setSignOutError('')
@@ -63,7 +74,7 @@ export function Applayout() {
 
         <nav className="flex-1 space-y-1 p-4">
           <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Workspace
+              {currentWorkspace?.organization?.name ?? 'SalesFlow Workspace'}
           </p>
 
           {navigation.map(({ label, to, icon: Icon, end }) => (

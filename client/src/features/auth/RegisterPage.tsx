@@ -43,7 +43,7 @@ export default function RegisterPage() {
 
             // Better Auth automatically signs users in after
             // successful registration with our current configuration.
-            navigate('/', { replace: true })
+            navigate('/onboarding', { replace: true })
         } catch {
             setErrorMessage(
                 'Unable to connect to the server. Please try again.',
